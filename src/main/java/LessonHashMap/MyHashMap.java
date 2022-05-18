@@ -1,9 +1,15 @@
+package LessonHashMap;
 
-public class myHashMap<K, V> {
-    private Node<K, V>[] table = new Node[16];
+public class MyHashMap<K, V> {
+
+    final int HASHMAP_SIZE = 16;
+    private Node<K, V>[] table = new Node[HASHMAP_SIZE];
     private int size;
-    private int threshold = (int) (table.length * 0.7);
+    private int threshold;
 
+    public MyHashMap() {
+        setThreshold();
+    }
 
     public void put(K key, V value) {
 
@@ -27,7 +33,7 @@ public class myHashMap<K, V> {
     }
 
     public int getNumBucket(K key) {
-        return key.hashCode() % table.length;
+        return key == null ? 0 : key.hashCode() % table.length;
     }
 
 
@@ -114,9 +120,13 @@ public class myHashMap<K, V> {
     }
 
     private void resize() {
-        Node<K, V>[] newTable = new Node[table.length + 16];
+        Node<K, V>[] newTable = new Node[table.length * 2];
         System.arraycopy(table, 0, newTable, 0, table.length);
         table = newTable;
+        setThreshold();
+    }
+
+    private void setThreshold(){
         threshold = (int) (table.length * 0.7);
     }
 }
