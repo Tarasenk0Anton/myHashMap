@@ -24,6 +24,7 @@ public class TestHashMap {
 
         tMap.put(1,"Hello");
         Assert.assertTrue(tMap.containsKey(1));
+        Assert.assertEquals(1, tMap.size());
     }
 
     @Test

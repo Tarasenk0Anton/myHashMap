@@ -2,8 +2,8 @@ package LessonHashMap;
 
 public class MyHashMap<K, V> {
 
-    final int HASHMAP_SIZE = 16;
-    private Node<K, V>[] table = new Node[HASHMAP_SIZE];
+    private int INIT_SIZE = 16;
+    private Node<K, V>[] table = new Node[INIT_SIZE];
     private int size;
     private int threshold;
 
@@ -18,9 +18,7 @@ public class MyHashMap<K, V> {
 
         Node<K, V> findNode = getNode(key);
 
-        if (findNode == null) {
-            table[numBucket] = new Node<>(key, value, null);
-        } else {
+        if (findNode != null) {
             findNode.value = value;
             return;
         }
@@ -53,11 +51,7 @@ public class MyHashMap<K, V> {
 
         Node<K, V> findNode = getNode(key);
 
-        if (findNode == null) {
-            return false;
-        }
-
-        return true;
+        return findNode != null;
 
     }
 
