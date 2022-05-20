@@ -1,9 +1,11 @@
 package LessonHashMap;
 
+import java.util.Optional;
+
 public class MyHashMap<K, V> {
 
-    final int HASHMAP_SIZE = 16;
-    private Node<K, V>[] table = new Node[HASHMAP_SIZE];
+    private int INIT_SIZE = 16;
+    private Node<K, V>[] table = new Node[INIT_SIZE];
     private int size;
     private int threshold;
 
@@ -13,14 +15,11 @@ public class MyHashMap<K, V> {
 
     public void put(K key, V value) {
 
-
         int numBucket = getNumBucket(key);
 
         Node<K, V> findNode = getNode(key);
 
-        if (findNode == null) {
-            table[numBucket] = new Node<>(key, value, null);
-        } else {
+        if (findNode != null) {
             findNode.value = value;
             return;
         }
@@ -35,7 +34,6 @@ public class MyHashMap<K, V> {
     public int getNumBucket(K key) {
         return key == null ? 0 : key.hashCode() % table.length;
     }
-
 
     public V get(K key) {
 
@@ -53,11 +51,7 @@ public class MyHashMap<K, V> {
 
         Node<K, V> findNode = getNode(key);
 
-        if (findNode == null) {
-            return false;
-        }
-
-        return true;
+        return findNode != null;
 
     }
 
@@ -65,15 +59,8 @@ public class MyHashMap<K, V> {
 
         for (Node<K, V> thisNode : table) {
             if (thisNode != null) {
-
                 if (thisNode.value.equals(value)) {
                     return true;
-                }
-
-                for (; thisNode.next != null; thisNode = thisNode.next) {
-                    if (thisNode.value.equals(value)) {
-                        return true;
-                    }
                 }
             }
         }
@@ -87,20 +74,19 @@ public class MyHashMap<K, V> {
             return null;
         } else {
             Node<K, V> node = table[numBucket];
-            if (node.next != null) {
-                for (Node nodes = node; node.next != null; nodes = node.next) {
-                    if (nodes.key.equals(key)) {
-                        return nodes;
-                    }
-                }
-            } else {
-                if (node.key.equals(key)) {
-                    return node;
+
+            for (Node nodes = node; node.next != null; nodes = node.next) {
+                if (nodes.key.equals(key)) {
+                    return nodes;
                 }
             }
+
+            if (node.key.equals(key)) {
+                return node;
+            }
+
         }
         return null;
-
     }
 
     private class Node<K, V> {
@@ -120,13 +106,20 @@ public class MyHashMap<K, V> {
     }
 
     private void resize() {
+
         Node<K, V>[] newTable = new Node[table.length * 2];
-        System.arraycopy(table, 0, newTable, 0, table.length);
-        table = newTable;
         setThreshold();
+
+        for (Node<K, V> thisNode : table) {
+            if (thisNode != null) {
+                newTable[getNumBucket(thisNode.key)] = thisNode;
+            }
+        }
+
+        table = newTable;
     }
 
-    private void setThreshold(){
+    private void setThreshold() {
         threshold = (int) (table.length * 0.7);
     }
 }
